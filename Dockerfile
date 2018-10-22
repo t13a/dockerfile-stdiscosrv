@@ -28,4 +28,4 @@ RUN apk add --no-cache \
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 
-CMD [ "su-exec", "stdiscosrv", "/usr/local/bin/stdiscosrv" ]
+CMD [ "su-exec", "stdiscosrv", "stdiscosrv" ]
