@@ -1,19 +1,26 @@
 ARG ALPINE_IMAGE=alpine
-ARG GOLANG_ALPINE_IMAGE=golang:alpine
+ARG GOLANG_IMAGE=golang:alpine
 
-FROM ${GOLANG_ALPINE_IMAGE} AS builder
+FROM ${ALPINE_IMAGE} AS collector
 
 ARG SYNCTHING_BRANCH=master
-ARG SYNCTHING_REPOSITORY=https://github.com/syncthing/syncthing
+ARG SYNCTHING_SOURCE_ZIP=https://github.com/syncthing/syncthing/archive/${SYNCTHING_BRANCH}.zip
+ARG SYNCTHING_SOURCE_ROOT=syncthing-${SYNCTHING_BRANCH}
+
+ADD "${SYNCTHING_SOURCE_ZIP}" /syncthing.zip
+
+RUN unzip /syncthing.zip && \
+    mv "${SYNCTHING_SOURCE_ROOT}" /syncthing
+
+FROM ${GOLANG_IMAGE} AS builder
 
 ENV CGO_ENABLED=0
 
+COPY --from=collector /syncthing /go/src/github.com/syncthing/syncthing
+
 WORKDIR /go/src/github.com/syncthing/syncthing
 
-RUN apk add --no-cache git && \
-    git clone -b "${SYNCTHING_BRANCH}" "${SYNCTHING_REPOSITORY}" "$(pwd)" && \
-    rm -f stdiscosrv && \
-    go run build.go -no-upgrade build stdiscosrv
+RUN go run build.go -no-upgrade build stdiscosrv
 
 FROM ${ALPINE_IMAGE}
 
