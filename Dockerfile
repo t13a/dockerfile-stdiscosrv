@@ -10,7 +10,7 @@ ARG SYNCTHING_DEST=/syncthing.zip
 
 ADD "${SYNCTHING_SRC}" "${SYNCTHING_DEST}"
 
-RUN [ -d /syncthing ] || (unzip /syncthing.zip && mv "${SYNCTHING_SRC_ROOT}" /syncthing)
+RUN [ -d /syncthing ] || (unzip "${SYNCTHING_DEST}" && mv "${SYNCTHING_SRC_ROOT}" /syncthing)
 
 FROM ${GOLANG_IMAGE} AS builder
 
