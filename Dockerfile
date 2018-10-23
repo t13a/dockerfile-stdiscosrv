@@ -4,13 +4,13 @@ ARG GOLANG_IMAGE=golang:alpine
 FROM ${ALPINE_IMAGE} AS collector
 
 ARG SYNCTHING_BRANCH=master
-ARG SYNCTHING_SOURCE_ZIP=https://github.com/syncthing/syncthing/archive/${SYNCTHING_BRANCH}.zip
-ARG SYNCTHING_SOURCE_ROOT=syncthing-${SYNCTHING_BRANCH}
+ARG SYNCTHING_SRC=https://github.com/syncthing/syncthing/archive/${SYNCTHING_BRANCH}.zip
+ARG SYNCTHING_SRC_ROOT=syncthing-${SYNCTHING_BRANCH}
+ARG SYNCTHING_DEST=/syncthing.zip
 
-ADD "${SYNCTHING_SOURCE_ZIP}" /syncthing.zip
+ADD "${SYNCTHING_SRC}" "${SYNCTHING_DEST}"
 
-RUN unzip /syncthing.zip && \
-    mv "${SYNCTHING_SOURCE_ROOT}" /syncthing
+RUN [ -d /syncthing ] || (unzip /syncthing.zip && mv "${SYNCTHING_SRC_ROOT}" /syncthing)
 
 FROM ${GOLANG_IMAGE} AS builder
 
