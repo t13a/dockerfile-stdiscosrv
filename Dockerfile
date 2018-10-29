@@ -26,11 +26,6 @@ RUN go run build.go -no-upgrade build stdiscosrv
 
 FROM ${ALPINE_IMAGE}
 
-ENV STDISCOSRV_USER=stdiscosrv
-ENV STDISCOSRV_UID=1000
-ENV STDISCOSRV_GID=1000
-ENV STDISCOSRV_HOME=/stdiscosrv
-
 COPY --from=builder /go/src/github.com/syncthing/syncthing/stdiscosrv /usr/local/bin/stdiscosrv
 COPY /rootfs /
 
@@ -38,6 +33,8 @@ RUN apk add --no-cache \
     ca-certificates \
     su-exec
 
-ENTRYPOINT [ "/entrypoint.sh" ]
+ENV STDISCOSRV_UID=1000
+ENV STDISCOSRV_GID=1000
+ENV STDISCOSRV_HOME=/stdiscosrv
 
-CMD [ "su-exec", "stdiscosrv", "stdiscosrv" ]
+ENTRYPOINT [ "/entrypoint.sh" ]

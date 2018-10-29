@@ -12,5 +12,5 @@ docker run \
 -p 8443:8443 \
 -p 19200:19200 \
 -v $(pwd)/stdiscosrv:/stdiscosrv \
-t13a/stdiscosrv \
+t13a/stdiscosrv
 ```
